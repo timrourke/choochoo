@@ -18,8 +18,11 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="unit">
+            <directory suffix="Test.php">tests/Unit/</directory>
+        </testsuite>
+        <testsuite name="functional">
+            <directory suffix="Test.php">tests/Functional/</directory>
         </testsuite>
     </testsuites>
 
@@ -31,5 +34,6 @@
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <listener class="App\Tests\Functional\MigrationsTestsListener" />
     </listeners>
 </phpunit>

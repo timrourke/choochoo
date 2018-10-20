@@ -16,9 +16,12 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "symfony/browser-kit": "*",
+        "symfony/css-selector": "*",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.8",
-        "symfony/phpunit-bridge": "*"
+        "symfony/phpunit-bridge": "*",
+        "symfony/process": "*"
     },
     "config": {
         "preferred-install": {
@@ -54,7 +57,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "test": "bin/phpunit --coverage-text",
+        "test-unit":"bin/phpunit --coverage-text --testsuite unit",
+        "test-functional": "bin/phpunit --coverage-text --testsuite functional"
     },
     "conflict": {
         "symfony/symfony": "*"
