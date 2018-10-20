@@ -1,6 +1,6 @@
 FROM php:7.2.9-fpm-alpine
 
-WORKDIR /var/www/app
+WORKDIR /var/www/api
 
 RUN echo "PS1='\w\$ '" >> ~/.bashrc
 
