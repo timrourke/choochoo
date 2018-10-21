@@ -1,17 +1,55 @@
 <?php
 
-namespace App\Tests\Functional;
+declare(strict_types=1);
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+namespace App\Tests\Functional\Controller;
 
-class TrainLineControllerTest extends WebTestCase
+use App\Entity\TrainLine;
+
+class TrainLineControllerTest extends ControllerTestCase
 {
-    public function testSomething()
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function shouldGetFirstFiveTrainLines()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
+        $this->createNTrainLines(5);
 
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Hello World', $crawler->filter('h1')->text());
+        $this->client->request('GET', '/api/trainLines');
+
+        $response = $this->client->getResponse();
+        $responseJson = json_decode($response->getContent(), true);
+
+        $this->assertSame(200, $response->getStatusCode());
+
+        $this->assertCount(
+            5,
+            $responseJson['trainLines']
+        );
+    }
+
+    /**
+     * @param int $numTrainLines
+     * @return TrainLine[]
+     * @throws \Exception
+     */
+    private function createNTrainLines(int $numTrainLines): array
+    {
+        $trainLines = [];
+
+        for ($i = 0; $i < $numTrainLines; $i++) {
+            $trainLine = new TrainLine();
+            $trainLine->setName('Train Line ' . ($i + 1));
+            $trainLine->setCreatedAt(new \DateTimeImmutable());
+            $trainLine->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->persist($trainLine);
+            $this->entityManager->flush();
+
+            $trainLines[] = $trainLine;
+        }
+
+        return $trainLines;
     }
 }

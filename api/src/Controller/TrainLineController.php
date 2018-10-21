@@ -1,7 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
+use App\Entity\TrainLine;
+use App\Repository\TrainLineRepository;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -12,8 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TrainLineController extends AbstractController
 {
-    public function __construct()
+    /**
+     * @var \App\Repository\TrainLineRepository
+     */
+    private $repo;
+
+    public function __construct(TrainLineRepository $repo)
     {
+        $this->repo = $repo;
     }
 
     /**
@@ -21,9 +32,26 @@ class TrainLineController extends AbstractController
      */
     public function index()
     {
+        $trainLines = $this->repo->findAll();
+
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/TrainLineController.php',
+            'trainLines' => $this->serializeTrainLines($trainLines),
         ]);
+    }
+
+    /**
+     * @param \App\Entity\TrainLine[] $trainLines
+     * @return array
+     */
+    private function serializeTrainLines(array $trainLines): array
+    {
+        return array_map(function(TrainLine $line) {
+            return [
+                'id'        => $line->getId(),
+                'name'      => $line->getName(),
+                'createdAt' => $line->getCreatedAt()->format(DateTime::ATOM),
+                'updatedAt' => $line->getUpdatedAt()->format(DateTime::ATOM),
+            ];
+        }, $trainLines);
     }
 }
