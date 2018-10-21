@@ -11,6 +11,11 @@ use DateTimeImmutable;
 class TrainLineRouteControllerTest extends ControllerTestCase
 {
     /**
+     * @var TrainLine[]
+     */
+    private $trainLines;
+
+    /**
      * @test
      * @throws \Exception
      */
@@ -68,7 +73,7 @@ class TrainLineRouteControllerTest extends ControllerTestCase
     {
         $this->createRoutes();
 
-        $this->client->request('GET', '/api/routes?trainLine=2');
+        $this->client->request('GET', '/api/routes?trainLine=' . $this->trainLines[1]->getId());
 
         $response = $this->client->getResponse();
         $responseData = json_decode($response->getContent(), true);
@@ -89,13 +94,13 @@ class TrainLineRouteControllerTest extends ControllerTestCase
      */
     private function createRoutes(): void
     {
-        $trainLines = $this->createTrainLines();
+        $this->trainLines = $this->createTrainLines();
 
         $route1 = new TrainLineRoute();
         $route1->setName('line one route one');
         $route1->setCreatedAt(new DateTimeImmutable());
         $route1->setUpdatedAt(new DateTimeImmutable());
-        $route1->setTrainLine($trainLines[0]);
+        $route1->setTrainLine($this->trainLines[0]);
 
         $this->entityManager->persist($route1);
 
@@ -103,7 +108,7 @@ class TrainLineRouteControllerTest extends ControllerTestCase
         $route2->setName('line one route two');
         $route2->setCreatedAt(new DateTimeImmutable());
         $route2->setUpdatedAt(new DateTimeImmutable());
-        $route2->setTrainLine($trainLines[0]);
+        $route2->setTrainLine($this->trainLines[0]);
 
         $this->entityManager->persist($route2);
 
@@ -111,7 +116,7 @@ class TrainLineRouteControllerTest extends ControllerTestCase
         $route3->setName('line two route one');
         $route3->setCreatedAt(new DateTimeImmutable());
         $route3->setUpdatedAt(new DateTimeImmutable());
-        $route3->setTrainLine($trainLines[1]);
+        $route3->setTrainLine($this->trainLines[1]);
 
         $this->entityManager->persist($route3);
 

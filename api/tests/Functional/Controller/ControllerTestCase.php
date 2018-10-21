@@ -37,4 +37,14 @@ class ControllerTestCase extends WebTestCase
 
         $this->connection->beginTransaction();
     }
+
+    /**
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    protected function tearDown()
+    {
+        $this->connection->rollBack();
+
+        parent::tearDown();
+    }
 }
