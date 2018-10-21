@@ -16,20 +16,16 @@ Vagrant.configure("2") do |config|
 
   # Provision the machine with Ansible
   config.vm.provision :ansible do |ansible|
-    ansible.inventory_path = "ansible_hosts"
-    ansible.playbook = "playbook.yml"
-    ansible.limit = "stanleyci_local"
+    ansible.inventory_path = "ansible/ansible_hosts"
+    ansible.playbook = "ansible/playbook.yml"
+    ansible.limit = "choochoo_local"
   end
 
-  # The source for `stanley` needs to be a sibling of this project on your local
-  # host OS's filesystem.
-  config.vm.synced_folder "./../stanleyci", "/var/www/api",
+  config.vm.synced_folder "./api", "/var/www/api",
 	id: "api",
 	type: "nfs"
 
-  # The source for `stanley-frontend` needs to be a sibling of this project on your
-  # local host OS's filesystem.
-  config.vm.synced_folder "./../stanleyci-frontend", "/var/www/frontend",
+  config.vm.synced_folder "./frontend", "/var/www/frontend",
 	id: "frontend",
 	type: "nfs"
 end

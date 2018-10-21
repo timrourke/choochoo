@@ -1,0 +1,65 @@
+---
+# Install NodeJS
+
+- name: Check if node is already installed
+  command: which node
+  register: node_installed
+  ignore_errors: True
+
+- name: Add repo for nodesource
+  shell: curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+  when: node_installed is failed
+
+- name: Install nodejs
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Check if yarnjs is already installed
+  command: which yarn
+  register: yarn_installed
+  ignore_errors: True
+
+- name: Add repo key for yarnjs
+  shell: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  when: yarn_installed is failed
+
+- name: Add repo for yarnjs
+  shell: echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  when: yarn_installed is failed
+
+- name: Install yarnjs
+  apt:
+    name: yarn
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install yarn dependencies
+  command: yarn install
+  args:
+    chdir: /var/www/frontend
+
+- name: Check if pm2 is already installed
+  command: which pm2
+  register: pm2_installed
+  ignore_errors: True
+
+- name: Install pm2
+  command: npm install -g pm2
+  become: true
+  when: pm2_installed is failed
+
+- name: Check if React development server is already running
+  shell: |
+    [[ -z $(pm2 pid react-app) ]]
+  register: react_not_running
+  ignore_errors: True
+
+- name: Start React development server
+  shell: pm2 start node_modules/react-scripts/scripts/start.js --name react-app
+  args:
+    chdir: /var/www/frontend
+  when: react_not_running is failed

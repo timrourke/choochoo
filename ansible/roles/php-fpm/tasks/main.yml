@@ -1,0 +1,60 @@
+---
+# Install PHP-FPM
+
+- name: Install python-software-properties
+  apt: name=python-software-properties state=present
+
+- name: Add apt repository ppa:ondrej/php
+  apt_repository:
+    repo: 'ppa:ondrej/php'
+
+- name: Install PHP 7.2
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - php7.2
+    - php7.2-cli
+    - php7.2-curl
+    - php7.2-dom
+    - php7.2-fpm
+    - php7.2-gd
+    - php7.2-mbstring
+    - php7.2-memcached
+    - php7.2-mysql
+    - php7.2-sqlite3
+    - php-ast
+    - zip
+    - unzip
+  notify: restart php7.2-fpm
+
+- name: Install xdebug
+  apt:
+    name: php7.2-xdebug
+    update_cache: yes
+    cache_valid_time: 3600
+  when: install_xdebug == true
+
+- name: Configure PHP-FPM
+  template: src=symfony.ini.j2 dest=/etc/php/7.2/fpm/conf.d/symfony.ini
+  notify: restart php7.2-fpm
+
+- name: Configure PHP-FPM pool
+  template: src=symfony.pool.conf.j2 dest=/etc/php/7.2/fpm/pool.d/symfony.pool.conf
+  notify: restart php7.2-fpm
+
+- name: Check if Composer already installed
+  command: which composer
+  register: composer_installed
+  ignore_errors: True
+
+- name: Install Composer
+  shell: |
+      php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+      php -r "if (hash_file('SHA384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+      php composer-setup.php
+      php -r "unlink('composer-setup.php');"
+      mv composer.phar /usr/local/bin/composer
+  when: composer_installed is failed

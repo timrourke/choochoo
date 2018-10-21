@@ -1,0 +1,4 @@
+---
+# Variables for the choochoo_local host go here.
+
+install_xdebug: true
