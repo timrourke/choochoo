@@ -19,7 +19,7 @@ class MigrationsTestsListener implements TestListener
             return;
         }
 
-        $dropDb = new Process('bin/console doctrine:database:drop --no-interaction --force');
+        $dropDb = new Process('bin/console doctrine:database:drop --if-exists --no-interaction --force');
         $dropDb->mustRun();
 
         $createDb = new Process('bin/console doctrine:database:create --if-not-exists --no-interaction');
