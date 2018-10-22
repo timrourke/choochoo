@@ -137,6 +137,7 @@ it('debounces queries', (done) => {
   setTimeout(() => {
     expect(actualSortOrder).toBe(TRAIN_LINE);
     expect(actualSortDirection).toBe(ASC);
+    expect(numTimesCalled).toBe(1);
 
     done();
   }, 100);
