@@ -52,6 +52,18 @@ it('closes menu', () => {
   expect(menuEl).toBeNull();
 });
 
+it('renders empty message when nothing matches', () => {
+  ReactDOM.render(<FilterableDropdown />, div);
+
+  const button = div.querySelector('button');
+
+  Simulate.click(button);
+
+  const menuEl = div.querySelector('.filterable-dropdown-menu');
+
+  expect(menuEl.textContent).toBe('Nothing to display.');
+});
+
 it('renders menu options', () => {
   const options = [
     {
@@ -78,10 +90,46 @@ it('renders menu options', () => {
   expect(optionsLabels).toBe('option 1 option 2 option 3');
 });
 
+it('selects an option', () => {
+  let actualSelectedOption = null;
+
+  const selectOption = (selectedOption) => {
+    actualSelectedOption = selectedOption;
+  };
+
+  const options = [
+    {
+      label: 'option 1',
+    },
+    {
+      label: 'option 2',
+    }
+  ];
+
+  ReactDOM.render(
+    <FilterableDropdown
+      options={options}
+      selectOption={selectOption}
+    />,
+    div
+  );
+
+  const button = div.querySelector('button');
+
+  Simulate.click(button);
+
+  const secondOption = div.querySelectorAll('.filterable-dropdown-option')[1];
+
+  Simulate.click(secondOption);
+
+  expect(actualSelectedOption).toBe(options[1]);
+});
+
 it('filters options on key up', (done) => {
   const expectedInputValue = 'some search string';
 
   let filterOptionsCalledWith = null;
+
   const filterOptionsStub = (str) => {
     filterOptionsCalledWith = str;
   };

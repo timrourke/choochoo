@@ -32,6 +32,10 @@ class FilterableDropdown extends Component {
     this.debounce();
   };
 
+  handleOptionSelected = (optionSelected) => {
+    this.props.selectOption(optionSelected);
+  };
+
   render() {
     return (
       <div className="filterable-dropdown">
@@ -51,8 +55,9 @@ class FilterableDropdown extends Component {
               {this.props.options && this.props.options.length ?
                 this.props.options.map((option, index) => {
                   return <FilterableDropdownOption
-                  key={`filterable-dropdown-option-${index}`}
-                  label={option.label}
+                    key={`filterable-dropdown-option-${index}`}
+                    label={option.label}
+                    onClick={() => this.handleOptionSelected(option)}
                   />;
                 })
                 : <em>Nothing to display.</em>
@@ -69,6 +74,7 @@ FilterableDropdown.defaultProps = {
   buttonLabel: '',
   debounceTimeout: 500,
   filterOptions: () => {},
+  selectOption: () => {},
 };
 
 export default FilterableDropdown;
