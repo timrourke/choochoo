@@ -52,7 +52,7 @@ it('initially renders sorting by run number ascending', () => {
   expect(otherColumnHeadersTextContents.indexOf(DESC_INDICATOR_STRING)).toBe(-1);
 });
 
-it('queries train routes when sort order changes', () => {
+it('queries train routes when sort order changes', (done) => {
   let actualSortOrder = null;
   let actualSortDirection = null;
 
@@ -61,17 +61,27 @@ it('queries train routes when sort order changes', () => {
     actualSortDirection = sortDirection;
   };
 
-  ReactDOM.render(<TrainRunTable queryTrainRuns={queryTrainRunsStub} />, div);
+  ReactDOM.render(
+    <TrainRunTable
+      debounceTimeout={0}
+      queryTrainRuns={queryTrainRunsStub}
+    />,
+    div
+  );
 
   const operatorIdColumnHeader = div.querySelector('.train-run-table-column-operator-id button');
 
   Simulate.click(operatorIdColumnHeader);
 
-  expect(actualSortOrder).toBe(OPERATOR_ID);
-  expect(actualSortDirection).toBe(ASC);
+  setTimeout(() => {
+    expect(actualSortOrder).toBe(OPERATOR_ID);
+    expect(actualSortDirection).toBe(ASC);
+
+    done();
+  }, 0);
 });
 
-it('queries train routes when sort direction changes', () => {
+it('queries train routes when sort direction changes', (done) => {
   let actualSortOrder = null;
   let actualSortDirection = null;
 
@@ -80,12 +90,54 @@ it('queries train routes when sort direction changes', () => {
     actualSortDirection = sortDirection;
   };
 
-  ReactDOM.render(<TrainRunTable queryTrainRuns={queryTrainRunsStub} />, div);
+  ReactDOM.render(
+    <TrainRunTable
+      debounceTimeout={0}
+      queryTrainRuns={queryTrainRunsStub}
+    />,
+    div
+  );
 
   const operatorIdColumnHeader = div.querySelector('.train-run-table-column-run-number button');
 
   Simulate.click(operatorIdColumnHeader);
 
-  expect(actualSortOrder).toBe(RUN_NUMBER);
-  expect(actualSortDirection).toBe(DESC);
+  setTimeout(() => {
+    expect(actualSortOrder).toBe(RUN_NUMBER);
+    expect(actualSortDirection).toBe(DESC);
+
+    done();
+  }, 0);
+});
+
+it('debounces queries', (done) => {
+  let actualSortOrder = null;
+  let actualSortDirection = null;
+  let numTimesCalled = 0;
+
+  const queryTrainRunsStub = (sortOrder, sortDirection) => {
+    actualSortOrder = sortOrder;
+    actualSortDirection = sortDirection;
+    numTimesCalled++;
+  };
+
+  ReactDOM.render(
+    <TrainRunTable
+      debounceTimeout={25}
+      queryTrainRuns={queryTrainRunsStub}
+    />,
+    div
+  );
+
+  Simulate.click(div.querySelector('.train-run-table-column-run-number button'));
+  Simulate.click(div.querySelector('.train-run-table-column-operator-id button'));
+  Simulate.click(div.querySelector('.train-run-table-column-route button'));
+  Simulate.click(div.querySelector('.train-run-table-column-train-line button'));
+
+  setTimeout(() => {
+    expect(actualSortOrder).toBe(TRAIN_LINE);
+    expect(actualSortDirection).toBe(ASC);
+
+    done();
+  }, 100);
 });

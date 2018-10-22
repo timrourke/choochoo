@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import debounce from 'lodash.debounce';
 import SortDirIndicator from './SortDirIndicator';
 import './TrainRunTable.css';
 
@@ -29,17 +30,29 @@ class TrainRunTable extends Component {
     };
   }
 
+  debounceQueryTrainRuns = () => {
+    if (typeof this.debounce === 'function') {
+      this.debounce.cancel();
+    }
+
+    this.debounce = debounce(() => {
+      this.props.queryTrainRuns(
+        this.state.sortOrder,
+        this.state.sortDirection
+      );
+    }, this.props.debounceTimeout);
+
+    this.debounce();
+  };
+
   handleHeaderClick = (newSortColumn) => {
     this.setState({
       ...this.state,
       sortOrder: newSortColumn,
       sortDirection: computeNewSortDirection(newSortColumn, this.state),
-    }, () => {
-      this.props.queryTrainRuns(
-        this.state.sortOrder,
-        this.state.sortDirection
-      );
-    });
+    },
+      this.debounceQueryTrainRuns
+    );
   };
 
   render() {
@@ -115,6 +128,7 @@ class TrainRunTable extends Component {
 }
 
 TrainRunTable.defaultProps = {
+  debounceTimeout: 500,
   queryTrainRuns: () => {},
 };
 
