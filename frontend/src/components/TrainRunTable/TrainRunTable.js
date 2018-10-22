@@ -2,12 +2,22 @@ import React, {Component} from 'react';
 import SortDirIndicator from './SortDirIndicator';
 import './TrainRunTable.css';
 
-const ASC         = 'ASC';
-const DESC        = 'DESC';
-const TRAIN_LINE  = 'TRAIN_LINE';
-const ROUTE       = 'ROUTE';
-const RUN_NUMBER  = 'RUN_NUMBER';
-const OPERATOR_ID = 'OPERATOR_ID';
+export const ASC         = 'ASC';
+export const DESC        = 'DESC';
+export const TRAIN_LINE  = 'TRAIN_LINE';
+export const ROUTE       = 'ROUTE';
+export const RUN_NUMBER  = 'RUN_NUMBER';
+export const OPERATOR_ID = 'OPERATOR_ID';
+
+const computeNewSortDirection = (newSortColumn, state) => {
+  if (newSortColumn !== state.sortOrder) {
+    return ASC;
+  }
+
+  return (state.sortDirection === ASC) ?
+    DESC :
+    ASC;
+};
 
 class TrainRunTable extends Component {
   constructor(props) {
@@ -23,9 +33,12 @@ class TrainRunTable extends Component {
     this.setState({
       ...this.state,
       sortOrder: newSortColumn,
-      sortDirection: (this.state.sortDirection === ASC) ?
-        DESC :
-        ASC,
+      sortDirection: computeNewSortDirection(newSortColumn, this.state),
+    }, () => {
+      this.props.queryTrainRuns(
+        this.state.sortOrder,
+        this.state.sortDirection
+      );
     });
   };
 
@@ -34,7 +47,7 @@ class TrainRunTable extends Component {
       <table className="train-run-table table">
         <thead>
           <tr>
-            <th>
+            <th className="train-run-table-column-train-line">
               <button
                 className="btn btn-link"
                 onClick={() => this.handleHeaderClick(TRAIN_LINE)}
@@ -45,7 +58,7 @@ class TrainRunTable extends Component {
                 }
               </button>
             </th>
-            <th>
+            <th className="train-run-table-column-route">
               <button
                 className="btn btn-link"
                 onClick={() => this.handleHeaderClick(ROUTE)}
@@ -56,7 +69,7 @@ class TrainRunTable extends Component {
                 }
               </button>
             </th>
-            <th>
+            <th className="train-run-table-column-run-number">
               <button
                 className="btn btn-link"
                 onClick={() => this.handleHeaderClick(RUN_NUMBER)}
@@ -67,7 +80,7 @@ class TrainRunTable extends Component {
                 }
               </button>
             </th>
-            <th>
+            <th className="train-run-table-column-operator-id">
               <button
                 className="btn btn-link"
                 onClick={() => this.handleHeaderClick(OPERATOR_ID)}
@@ -100,5 +113,9 @@ class TrainRunTable extends Component {
     );
   }
 }
+
+TrainRunTable.defaultProps = {
+  queryTrainRuns: () => {},
+};
 
 export default TrainRunTable;
