@@ -1,4 +1,5 @@
 import React from 'react';
+import './FilterableDropdownOption.css';
 
 export const IS_ACTIVE_STRING = '✅';
 

@@ -3,6 +3,14 @@ import debounce from 'lodash.debounce';
 import FilterableDropdownOption from './FilterableDropdownOption';
 import './FilterableDropdown.css';
 
+const isOptionActive = (selectedOption, currentOption) => {
+  if (!selectedOption) {
+    return false;
+  }
+
+  return selectedOption.id === currentOption.id;
+};
+
 class FilterableDropdown extends Component {
   constructor(props) {
     super(props);
@@ -34,6 +42,11 @@ class FilterableDropdown extends Component {
 
   handleOptionSelected = (optionSelected) => {
     this.props.selectOption(optionSelected);
+
+    this.setState({
+      ...this.state,
+      isShowingOptions: false,
+    });
   };
 
   render() {
@@ -55,6 +68,7 @@ class FilterableDropdown extends Component {
               {this.props.options && this.props.options.length ?
                 this.props.options.map((option, index) => {
                   return <FilterableDropdownOption
+                    isActive={isOptionActive(this.props.selectedOption, option)}
                     key={`filterable-dropdown-option-${index}`}
                     label={option.label}
                     onClick={() => this.handleOptionSelected(option)}

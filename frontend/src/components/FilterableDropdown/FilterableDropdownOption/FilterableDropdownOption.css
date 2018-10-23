@@ -1,0 +1,19 @@
+.filterable-dropdown-option {
+    border-bottom: 1px solid #ccc;
+    height: 2.25rem;
+    padding: .25rem;
+    position: relative;
+    text-align: left;
+}
+
+.filterable-dropdown-option:hover {
+    background-color: #fcfcfc;
+    cursor: pointer;
+}
+
+.filterable-dropdown-option .filterable-dropdown-option-active-indicator {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
