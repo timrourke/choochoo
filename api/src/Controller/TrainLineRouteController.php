@@ -36,6 +36,8 @@ class TrainLineRouteController extends AbstractController
             ->orderBy('t.name', 'ASC')
             ->setMaxResults(20);
 
+        $this->filterByName($qb, $request->get('name') ?? '');
+
         $this->filterByTrainLine($qb, $request->get('trainLine') ?? '');
 
         $routes = $qb->getQuery()->getResult();
@@ -71,5 +73,16 @@ class TrainLineRouteController extends AbstractController
         $qb->where(
             $qb->expr()->eq('t.trainLine', ':trainLine')
         )->setParameter('trainLine', $trainLine);
+    }
+
+    private function filterByName(QueryBuilder $qb, string $name = ''): void
+    {
+        if (empty($name)) {
+            return;
+        }
+
+        $qb->where(
+            $qb->expr()->like('t.name', ':name')
+        )->setParameter('name', '%' . $name . '%');
     }
 }

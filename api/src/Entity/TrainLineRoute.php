@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,6 +38,16 @@ class TrainLineRoute
      * @ORM\JoinColumn(nullable=false)
      */
     private $trainLine;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRun", mappedBy="trainLineRoute", orphanRemoval=false)
+     */
+    private $trainLineRuns;
+
+    public function __construct()
+    {
+        $this->trainLineRuns = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,6 +98,37 @@ class TrainLineRoute
     public function setTrainLine(?TrainLine $trainLine): self
     {
         $this->trainLine = $trainLine;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TrainLineRun[]
+     */
+    public function getTrainLineRuns(): Collection
+    {
+        return $this->trainLineRuns;
+    }
+
+    public function addTrainLineRun(TrainLineRun $trainLineRun): self
+    {
+        if (!$this->trainLineRuns->contains($trainLineRun)) {
+            $this->trainLineRuns[] = $trainLineRun;
+            $trainLineRun->setTrainLineRoute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrainLineRun(TrainLineRun $trainLineRun): self
+    {
+        if ($this->trainLineRuns->contains($trainLineRun)) {
+            $this->trainLineRuns->removeElement($trainLineRun);
+            // set the owning side to null (unless already changed)
+            if ($trainLineRun->getTrainLineRoute() === $this) {
+                $trainLineRun->setTrainLineRoute(null);
+            }
+        }
 
         return $this;
     }

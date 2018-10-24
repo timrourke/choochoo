@@ -44,7 +44,7 @@ class TrainLine
     private $operators;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRun", mappedBy="trainLineId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRun", mappedBy="trainLineId", orphanRemoval=false)
      */
     private $runs;
 
@@ -108,7 +108,7 @@ class TrainLine
     {
         if (!$this->routes->contains($route)) {
             $this->routes[] = $route;
-            $route->setTrainLineId($this);
+            $route->setTrainLine($this);
         }
 
         return $this;
@@ -119,8 +119,8 @@ class TrainLine
         if ($this->routes->contains($route)) {
             $this->routes->removeElement($route);
             // set the owning side to null (unless already changed)
-            if ($route->getTrainLineId() === $this) {
-                $route->setTrainLineId(null);
+            if ($route->getTrainLine() === $this) {
+                $route->setTrainLine(null);
             }
         }
 
@@ -139,7 +139,7 @@ class TrainLine
     {
         if (!$this->operators->contains($operator)) {
             $this->operators[] = $operator;
-            $operator->setTrainLineId($this);
+            $operator->setTrainLine($this);
         }
 
         return $this;
@@ -150,8 +150,8 @@ class TrainLine
         if ($this->operators->contains($operator)) {
             $this->operators->removeElement($operator);
             // set the owning side to null (unless already changed)
-            if ($operator->getTrainLineId() === $this) {
-                $operator->setTrainLineId(null);
+            if ($operator->getTrainLine() === $this) {
+                $operator->setTrainLine(null);
             }
         }
 
@@ -170,7 +170,7 @@ class TrainLine
     {
         if (!$this->runs->contains($run)) {
             $this->runs[] = $run;
-            $run->setTrainLineId($this);
+            $run->setTrainLine($this);
         }
 
         return $this;
@@ -181,8 +181,8 @@ class TrainLine
         if ($this->runs->contains($run)) {
             $this->runs->removeElement($run);
             // set the owning side to null (unless already changed)
-            if ($run->getTrainLineId() === $this) {
-                $run->setTrainLineId(null);
+            if ($run->getTrainLine() === $this) {
+                $run->setTrainLine(null);
             }
         }
 

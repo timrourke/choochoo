@@ -38,6 +38,12 @@ class TrainLineRun
      */
     private $updatedAt;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\TrainLineRoute", inversedBy="trainLineRuns")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $trainLineRoute;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -87,6 +93,18 @@ class TrainLineRun
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getTrainLineRoute(): ?TrainLineRoute
+    {
+        return $this->trainLineRoute;
+    }
+
+    public function setTrainLineRoute(?TrainLineRoute $trainLineRoute): self
+    {
+        $this->trainLineRoute = $trainLineRoute;
 
         return $this;
     }

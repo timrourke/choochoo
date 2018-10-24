@@ -45,7 +45,7 @@ class TrainOperator
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRun", mappedBy="operator", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRun", mappedBy="operator", orphanRemoval=false)
      */
     private $runs;
 
