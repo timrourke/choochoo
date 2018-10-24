@@ -18,8 +18,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(selectTrainRun(selectedTrainRun));
       dispatch(queryTrainRuns());
     },
-    queryTrainRuns: (sortOrder, sortDirection) => {
-      dispatch(queryTrainRuns(sortOrder, sortDirection));
+    queryTrainRuns: (sortOrder, sortDirection, offset) => {
+      dispatch(queryTrainRuns(sortOrder, sortDirection, offset));
     },
   };
 };

@@ -1,5 +1,30 @@
+.train-run-wrapper {
+    border: 10px solid white;
+    background-color: white;
+    border-radius: .25rem;
+}
+
+.train-run-wrapper ul.pagination{
+    margin-bottom: 0;
+}
+
+.train-run-wrapper nav .page-item-spacer {
+    border-bottom: 1px solid #dee2e6;
+    border-top: 1px solid #dee2e6;
+    flex-grow: 1;
+}
+
+.train-run-table {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+
 .train-run-table.table td {
     vertical-align: middle;
+}
+
+.train-run-table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f8f9;
 }
 
 .train-run-table td button {

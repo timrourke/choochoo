@@ -8,7 +8,7 @@ import TrainLinesFilterableDropdownContainer from './containers/TrainLinesFilter
 class App extends Component {
   render() {
     return (
-      <div className="App">
+      <div className="App container">
         <TrainRunTableContainer />
         <TrainLinesFilterableDropdownContainer />
         <TrainLineRoutesFilterableDropdownContainer />
