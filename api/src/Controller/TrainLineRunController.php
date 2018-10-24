@@ -38,6 +38,34 @@ class TrainLineRunController extends AbstractController
      */
     public function index(Request $request)
     {
+        $qb = $this->buildQuery()->setMaxResults(5);
+
+        $offset = (int) $request->get('offset') ?? 0;
+
+        $total = $this->getTotal();
+
+        $this->paginateQuery($qb, $offset);
+
+        $this->sortQuery(
+            $qb,
+            $request->get('sortOrder') ?? '',
+            $request->get('sortDirection') ?? ''
+        );
+
+        $runs = $qb->getQuery()->getResult();
+
+        return $this->json([
+            'runs' => $this->serializeRuns($runs),
+            'meta' => [
+                'limit' => 5,
+                'offset' => $offset,
+                'total' => $total,
+            ],
+        ]);
+    }
+
+    private function buildQuery(): QueryBuilder
+    {
         $qb = $this->repo->createQueryBuilder('t');
         $qb->select([
             't',
@@ -64,20 +92,26 @@ class TrainLineRunController extends AbstractController
             ->innerJoin(
                 't.operator',
                 'operator'
-            )
-            ->setMaxResults(5);
+            );
 
-        $this->sortQuery(
-            $qb,
-            $request->get('sortOrder') ?? '',
-            $request->get('sortDirection') ?? ''
-        );
+        return $qb;
+    }
 
-        $runs = $qb->getQuery()->getResult();
+    private function getTotal(): int
+    {
+        $totalResult = $this->repo->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
+            ->getQuery()
+            ->getResult();
 
-        return $this->json([
-            'runs' => $this->serializeRuns($runs),
-        ]);
+        $total = (int) current($totalResult[0]);
+
+        return $total;
+    }
+
+    private function paginateQuery(QueryBuilder $qb, int $offset): void
+    {
+        $qb->setFirstResult($offset);
     }
 
     private function sortQuery(
