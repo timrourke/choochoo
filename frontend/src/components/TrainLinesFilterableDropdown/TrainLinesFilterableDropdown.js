@@ -1,36 +1,37 @@
 import React, {Component} from 'react';
 import FilterableDropdown from './../FilterableDropdown';
 
-const getButtonLabel = (selectedOperator) => {
-  if (!selectedOperator) {
-    return 'Nothing selected.';
+const getButtonLabel = (selectedTrainLine) => {
+  if (!selectedTrainLine) {
+    return 'Select a train line.';
   }
 
-  return `${selectedOperator.firstName} ${selectedOperator.lastName}`;
+  return selectedTrainLine.name;
 };
 
-const getOptionsFromOperators = (operators) => {
-  return operators.map((operator) => {
+const getOptionsFromTrainLines = (trainLines) => {
+  return trainLines.map((trainLine) => {
     return {
-      ...operator,
-      label: `${operator.firstName} ${operator.lastName}`,
+      ...trainLine,
+      label: trainLine.name,
     };
   });
 };
 
-export default class OperatorsFilterableDropdown extends Component {
+export default class TrainLinesFilterableDropdown extends Component {
   componentDidMount() {
-    this.props.queryOperators();
+    this.props.queryTrainLines();
   };
 
   render() {
     return (
       <FilterableDropdown
-        buttonLabel={getButtonLabel(this.props.operators.selectedOperator)}
-        filterOptions={this.props.queryOperators}
-        selectOption={this.props.selectOperator}
-        options={getOptionsFromOperators(this.props.operators.operators)}
-        selectedOption={this.props.operators.selectedOperator}
+        buttonLabel={getButtonLabel(this.props.trainLines.selectedTrainLine)}
+        filterOptions={this.props.queryTrainLines}
+        isFilterable={false}
+        selectOption={this.props.selectTrainLine}
+        options={getOptionsFromTrainLines(this.props.trainLines.trainLines)}
+        selectedOption={this.props.trainLines.selectedTrainLine}
       />
     );
   }

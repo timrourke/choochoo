@@ -1,3 +1,8 @@
 .train-run-table.table td {
     vertical-align: middle;
 }
+
+.train-run-table td button {
+    text-align: center;
+    width: 45px;
+}

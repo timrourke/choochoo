@@ -3,7 +3,7 @@ import FilterableDropdown from './../FilterableDropdown';
 
 const getButtonLabel = (selectedOperator) => {
   if (!selectedOperator) {
-    return 'Nothing selected.';
+    return 'Select an operator.';
   }
 
   return `${selectedOperator.firstName} ${selectedOperator.lastName}`;

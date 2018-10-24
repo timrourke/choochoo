@@ -16,6 +16,7 @@
     padding: 10px;
     position: absolute;
     top: 100%;
+    width: 100%;
 }
 
 .filterable-dropdown .filterable-dropdown-menu:before {

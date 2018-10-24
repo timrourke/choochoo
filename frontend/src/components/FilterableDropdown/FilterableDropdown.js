@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import debounce from 'lodash.debounce';
 import FilterableDropdownOption from './FilterableDropdownOption';
 import './FilterableDropdown.css';
+const enhanceWithClickOutside = require('react-click-outside');
 
 const isOptionActive = (selectedOption, currentOption) => {
   if (!selectedOption) {
@@ -19,6 +20,17 @@ class FilterableDropdown extends Component {
       isShowingOptions: false,
       searchString: '',
     };
+  }
+
+  handleClickOutside() {
+    this.closeMenu();
+  }
+
+  closeMenu() {
+    this.setState({
+      ...this.state,
+      isShowingOptions: false,
+    });
   }
 
   handleButtonClick = () => {
@@ -43,10 +55,7 @@ class FilterableDropdown extends Component {
   handleOptionSelected = (optionSelected) => {
     this.props.selectOption(optionSelected);
 
-    this.setState({
-      ...this.state,
-      isShowingOptions: false,
-    });
+    this.closeMenu();
   };
 
   render() {
@@ -58,12 +67,14 @@ class FilterableDropdown extends Component {
         >{this.props.buttonLabel}</button>
         {this.state.isShowingOptions &&
           <div className="filterable-dropdown-menu">
-            <input
-              className="form-control"
-              placeholder="Search..."
-              type="search"
-              onKeyUp={e => this.handleKeyUp(e.target.value)}
-            />
+            {this.props.isFilterable &&
+              <input
+                className="form-control"
+                placeholder="Search..."
+                type="search"
+                onKeyUp={e => this.handleKeyUp(e.target.value)}
+              />
+            }
             <ul>
               {this.props.options && this.props.options.length ?
                 this.props.options.map((option, index) => {
@@ -87,8 +98,9 @@ class FilterableDropdown extends Component {
 FilterableDropdown.defaultProps = {
   buttonLabel: '',
   debounceTimeout: 500,
+  isFilterable: true,
   filterOptions: () => {},
   selectOption: () => {},
 };
 
-export default FilterableDropdown;
+export default enhanceWithClickOutside(FilterableDropdown);

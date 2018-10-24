@@ -1,3 +1,3 @@
-import OperatorsFilterableDropdown from './OperatorsFilterableDropdown';
+import TrainLinesFilterableDropdown from './TrainLinesFilterableDropdown';
 
-export default OperatorsFilterableDropdown;
+export default TrainLinesFilterableDropdown;
