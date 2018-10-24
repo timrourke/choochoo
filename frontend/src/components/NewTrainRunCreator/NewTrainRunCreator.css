@@ -1,0 +1,18 @@
+.new-train-run-creator {
+    background-color: white;
+    padding: 1em;
+    text-align: left;
+    width: 300px;
+}
+
+.new-train-run-creator label {
+    width: 100%;
+}
+
+.new-train-run-creator .filterable-dropdown {
+    width: 100%;
+}
+
+.new-train-run-creator .create {
+    width: 100%;
+}

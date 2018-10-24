@@ -1,7 +1,14 @@
 import axios from 'axios';
 
-export const SELECT_TRAIN_RUN = 'SELECT_TRAIN_RUN';
-export const RECEIVE_TRAIN_RUNS = 'RECEIVE_TRAIN_RUNS';
+export const CREATE_NEW_TRAIN_RUN = 'CREATE_NEW_TRAIN_RUN';
+export const SELECT_TRAIN_RUN     = 'SELECT_TRAIN_RUN';
+export const RECEIVE_TRAIN_RUNS   = 'RECEIVE_TRAIN_RUNS';
+
+export function createNewTrainRun() {
+  return {
+    type: CREATE_NEW_TRAIN_RUN,
+  };
+};
 
 export function selectTrainRun(selectedTrainRun) {
   return {

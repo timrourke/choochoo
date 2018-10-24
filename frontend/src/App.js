@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import TrainRunTableContainer from './containers/TrainRunTableContainer';
-import OperatorsFilterableDropdownContainer from './containers/OperatorsFilterableDropdownContainer';
-import TrainLineRoutesFilterableDropdownContainer from './containers/TrainLineRoutesFilterableDropdownContainer';
-import TrainLinesFilterableDropdownContainer from './containers/TrainLinesFilterableDropdownContainer';
+import NewTrainRunCreator from './components/NewTrainRunCreator';
 
 class App extends Component {
   render() {
     return (
       <div className="App container">
         <TrainRunTableContainer />
-        <TrainLinesFilterableDropdownContainer />
-        <TrainLineRoutesFilterableDropdownContainer />
-        <OperatorsFilterableDropdownContainer />
+        <NewTrainRunCreator />
       </div>
     );
   }

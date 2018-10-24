@@ -1,9 +1,11 @@
 import {
+  CREATE_NEW_TRAIN_RUN,
   RECEIVE_TRAIN_RUNS,
   SELECT_TRAIN_RUN
 } from '../actions/trainRuns';
 
 const initialState = {
+  isCreating: false,
   limit: 5,
   offset: 0,
   selectedTrainRun: null,
@@ -21,6 +23,11 @@ const concatSelectedTrainRunWithOthers = (selectedTrainRun, others) => {
 
 export default function trainRuns(state = initialState, action) {
   switch (action.type) {
+    case CREATE_NEW_TRAIN_RUN:
+      return {
+        ...state,
+        isCreating: true,
+      };
     case SELECT_TRAIN_RUN:
       return {
         ...state,
