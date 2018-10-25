@@ -26,12 +26,12 @@ export default class TrainLinesFilterableDropdown extends Component {
   render() {
     return (
       <FilterableDropdown
-        buttonLabel={getButtonLabel(this.props.trainLines.selectedTrainLine)}
+        buttonLabel={getButtonLabel(this.props.selectedTrainLine)}
         filterOptions={this.props.queryTrainLines}
         isFilterable={false}
         selectOption={this.props.selectTrainLine}
-        options={getOptionsFromTrainLines(this.props.trainLines.trainLines)}
-        selectedOption={this.props.trainLines.selectedTrainLine}
+        options={getOptionsFromTrainLines(this.props.trainLines)}
+        selectedOption={this.props.selectedTrainLine}
       />
     );
   }

@@ -17,9 +17,13 @@ export function receiveOperators(operators) {
   };
 }
 
-export function queryOperators(byName = '') {
-  return dispatch => {
-    axios.get(`/api/operators?name=${byName.trim()}`)
+export function queryOperators(byName = '', trainLineId = '') {
+  return (dispatch, getState) => {
+    if (!trainLineId) {
+      trainLineId = getState().store.selectedTrainLine.id;
+    }
+
+    axios.get(`/api/operators?name=${byName.trim()}&trainLine=${trainLineId}`)
       .then((response) => {
         dispatch(receiveOperators(response.data.operators));
       });

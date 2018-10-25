@@ -38,6 +38,8 @@ class TrainOperatorController extends AbstractController
 
         $this->filterByName($qb, $request->get('name') ?? '');
 
+        $this->filterByTrainLine($qb, $request->get('trainLine') ?? '');
+
         $operators = $qb->getQuery()->getResult();
 
         return $this->json([
@@ -73,5 +75,16 @@ class TrainOperatorController extends AbstractController
                 $qb->expr()->like('t.lastName', ':name')
             )
         )->setParameter('name', '%' . $name . '%');
+    }
+
+    private function filterByTrainLine(QueryBuilder $qb, string $trainLine = ''): void
+    {
+        if (empty($trainLine)) {
+            return;
+        }
+
+        $qb->where(
+            $qb->expr()->eq('t.trainLine', ':trainLine')
+        )->setParameter('trainLine', $trainLine);
     }
 }

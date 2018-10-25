@@ -19,18 +19,14 @@ const getOptionsFromRoutes = (routes) => {
 };
 
 export default class TrainLineRoutesFilterableDropdown extends Component {
-  componentDidMount() {
-    this.props.queryRoutes();
-  };
-
   render() {
     return (
       <FilterableDropdown
-        buttonLabel={getButtonLabel(this.props.routes.selectedRoute)}
+        buttonLabel={getButtonLabel(this.props.selectedRoute)}
         filterOptions={this.props.queryRoutes}
         selectOption={this.props.selectRoute}
-        options={getOptionsFromRoutes(this.props.routes.routes)}
-        selectedOption={this.props.routes.selectedRoute}
+        options={getOptionsFromRoutes(this.props.routes)}
+        selectedOption={this.props.selectedRoute}
       />
     );
   }

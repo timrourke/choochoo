@@ -7,8 +7,8 @@ import OperatorsFilterableDropdown from '../components/OperatorsFilterableDropdo
 
 const mapStateToProps = state => {
   return {
-    operators: state.operators,
-    selectedOperator: state.selectedOperator,
+    operators: state.store.operators,
+    selectedOperator: state.store.selectedOperator,
   };
 };
 
@@ -18,8 +18,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(selectOperator(selectedOperator));
       dispatch(queryOperators());
     },
-    queryOperators: byName => {
-      dispatch(queryOperators(byName));
+    queryOperators: (byName, trainLineId) => {
+      dispatch(queryOperators(byName, trainLineId));
     },
   };
 };

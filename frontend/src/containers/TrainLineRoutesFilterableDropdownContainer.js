@@ -7,8 +7,8 @@ import TrainLineRoutesFilterableDropdown from '../components/TrainLineRoutesFilt
 
 const mapStateToProps = state => {
   return {
-    routes: state.routes,
-    selectedRoute: state.selectedRoute,
+    routes: state.store.routes,
+    selectedRoute: state.store.selectedRoute,
   };
 };
 
@@ -18,8 +18,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(selectRoute(selectedRoute));
       dispatch(queryRoutes());
     },
-    queryRoutes: byName => {
-      dispatch(queryRoutes(byName));
+    queryRoutes: (byName, trainLineId)  => {
+      dispatch(queryRoutes(byName, trainLineId));
     },
   };
 };

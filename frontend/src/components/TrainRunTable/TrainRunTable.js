@@ -72,8 +72,8 @@ class TrainRunTable extends Component {
       ...this.state,
       offset: getNextOffset(
         this.state.offset,
-        this.props.trainRuns.limit,
-        this.props.trainRuns.total
+        this.props.limit,
+        this.props.total
       ),
     },
       this.debounceQueryTrainRuns
@@ -85,11 +85,23 @@ class TrainRunTable extends Component {
         ...this.state,
         offset: getPrevOffset(
           this.state.offset,
-          this.props.trainRuns.limit
+          this.props.limit
         ),
       },
       this.debounceQueryTrainRuns
     );
+  };
+
+  handleDeleteClick = (trainRunId) => {
+    if (typeof this.deleteDebounce === 'function') {
+      this.deleteDebounce.cancel();
+    }
+
+    this.deleteDebounce = debounce(() => {
+      this.props.deleteTrainRun(trainRunId);
+    }, this.props.debounceTimeout);
+
+    this.deleteDebounce();
   };
 
   handleHeaderClick = (newSortColumn) => {
@@ -157,8 +169,8 @@ class TrainRunTable extends Component {
           </tr>
           </thead>
           <tbody>
-          {this.props.trainRuns.trainRuns && this.props.trainRuns.trainRuns.length ?
-            this.props.trainRuns.trainRuns.map((run) => {
+          {this.props.trainRuns && this.props.trainRuns.length ?
+            this.props.trainRuns.map((run) => {
               return (
                 <tr key={run.id}>
                   <td>{run.trainLineName}</td>
@@ -169,7 +181,12 @@ class TrainRunTable extends Component {
                     <button className="btn btn-light border border-primary">✏</button>
                   </td>
                   <td>
-                    <button className="btn btn-light border border-danger">🗑</button>
+                    <button
+                      className="btn btn-light border border-danger"
+                      onClick={() => this.handleDeleteClick(run.id)}
+                    >
+                      🗑
+                    </button>
                   </td>
                 </tr>
               );

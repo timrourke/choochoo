@@ -19,18 +19,14 @@ const getOptionsFromOperators = (operators) => {
 };
 
 export default class OperatorsFilterableDropdown extends Component {
-  componentDidMount() {
-    this.props.queryOperators();
-  };
-
   render() {
     return (
       <FilterableDropdown
-        buttonLabel={getButtonLabel(this.props.operators.selectedOperator)}
+        buttonLabel={getButtonLabel(this.props.selectedOperator)}
         filterOptions={this.props.queryOperators}
         selectOption={this.props.selectOperator}
-        options={getOptionsFromOperators(this.props.operators.operators)}
-        selectedOption={this.props.operators.selectedOperator}
+        options={getOptionsFromOperators(this.props.operators)}
+        selectedOption={this.props.selectedOperator}
       />
     );
   }

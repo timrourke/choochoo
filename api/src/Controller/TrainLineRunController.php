@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\TrainLineRun;
+use App\Repository\TrainLineRepository;
+use App\Repository\TrainLineRouteRepository;
 use App\Repository\TrainLineRunRepository;
+use App\Repository\TrainOperatorRepository;
 use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,11 +27,21 @@ class TrainLineRunController extends AbstractController
     private const SORT_RUN_NUMBER           = 'runNumber';
     private const SORT_OPERATOR_COMPOUND_ID = 'operatorCompoundId';
 
+    private $operatorRepo;
     private $repo;
+    private $routeRepo;
+    private $trainLineRepo;
 
-    public function __construct(TrainLineRunRepository $repo)
-    {
+    public function __construct(
+        TrainLineRunRepository $repo,
+        TrainLineRepository $trainLineRepo,
+        TrainLineRouteRepository $routeRepo,
+        TrainOperatorRepository $operatorRepo
+    ) {
         $this->repo = $repo;
+        $this->trainLineRepo = $trainLineRepo;
+        $this->routeRepo = $routeRepo;
+        $this->operatorRepo = $operatorRepo;
     }
 
     /**
@@ -62,6 +75,63 @@ class TrainLineRunController extends AbstractController
                 'total' => $total,
             ],
         ]);
+    }
+
+    /**
+     * @Route("", methods={"POST"})
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
+    public function create(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $newTrainLineRun = new TrainLineRun();
+
+        $trainLine = $this->trainLineRepo->find($data['run']['trainLine']);
+        $route = $this->routeRepo->find($data['run']['route']);
+        $operator = $this->operatorRepo->find($data['run']['operator']);
+
+        $newTrainLineRun->setTrainLine($trainLine);
+        $newTrainLineRun->setTrainLineRoute($route);
+        $newTrainLineRun->setOperator($operator);
+        $newTrainLineRun->setCreatedAt(new \DateTimeImmutable());
+        $newTrainLineRun->setUpdatedAt(new \DateTimeImmutable());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($newTrainLineRun);
+        $em->flush();
+
+        $qb = $this->buildQuery();
+
+        $qb->andWhere(
+            $qb->expr()->eq('t.id', $newTrainLineRun->getId())
+        )->setMaxResults(1);
+
+        $run = $qb->getQuery()->getResult();
+
+        return $this->json([
+            'run' => $this->serializeRun($run[0]),
+        ], 201);
+    }
+
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/{id}", methods={"DELETE"})
+     */
+    public function delete($id)
+    {
+        $trainLineRun = $this->repo->find($id);
+
+        if ($trainLineRun) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($trainLineRun);
+            $em->flush();
+        }
+
+        return $this->json(new \stdClass(), 204);
     }
 
     private function buildQuery(): QueryBuilder
@@ -160,30 +230,31 @@ class TrainLineRunController extends AbstractController
         }
     }
 
-    /**
-     * @param array $results
-     * @return array
-     */
     private function serializeRuns(array $results): array
     {
         return array_map(function(array $result) {
-            /**
-             * @var TrainLineRun $run
-             */
-            $run = $result[0];
-
-            return [
-                'id'                 => $run->getId(),
-                'line'               => $run->getTrainLine()->getId(),
-                'operator'           => $run->getOperator()->getId(),
-                'route'              => $run->getTrainLineRoute()->getId(),
-                'createdAt'          => $run->getCreatedAt()->format(DateTime::ATOM),
-                'updatedAt'          => $run->getUpdatedAt()->format(DateTime::ATOM),
-                'trainLineName'      => $run->getTrainLine()->getName(),
-                'routeName'          => $run->getTrainLineRoute()->getName(),
-                'runNumber'          => $result['run_number'],
-                'operatorCompoundId' => $result['operator_compound_id'],
-            ];
+            return $this->serializeRun($result);
         }, $results);
+    }
+
+    private function serializeRun(array $result): array
+    {
+        /**
+         * @var TrainLineRun $run
+         */
+        $run = $result[0];
+
+        return [
+            'id'                 => $run->getId(),
+            'line'               => $run->getTrainLine()->getId(),
+            'operator'           => $run->getOperator()->getId(),
+            'route'              => $run->getTrainLineRoute()->getId(),
+            'createdAt'          => $run->getCreatedAt()->format(DateTime::ATOM),
+            'updatedAt'          => $run->getUpdatedAt()->format(DateTime::ATOM),
+            'trainLineName'      => $run->getTrainLine()->getName(),
+            'routeName'          => $run->getTrainLineRoute()->getName(),
+            'runNumber'          => $result['run_number'],
+            'operatorCompoundId' => $result['operator_compound_id'],
+        ];
     }
 }

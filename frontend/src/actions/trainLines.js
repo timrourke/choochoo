@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const SELECT_TRAIN_LINE = 'SELECT_TRAIN_LINE';
+export const SELECT_TRAIN_LINE   = 'SELECT_TRAIN_LINE';
 export const RECEIVE_TRAIN_LINES = 'RECEIVE_TRAIN_LINES';
 
 export function selectTrainLine(selectedTrainLine) {
