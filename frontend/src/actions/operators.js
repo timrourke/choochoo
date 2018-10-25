@@ -17,6 +17,17 @@ export function receiveOperators(operators) {
   };
 }
 
+export function getOperator(operatorId) {
+  return dispatch => {
+    const promise = axios.get(`api/operators/${operatorId}`);
+    promise
+      .then((response) => {
+        dispatch(selectOperator(response.data.operator));
+      });
+    return promise;
+  };
+}
+
 export function queryOperators(byName = '', trainLineId = '') {
   return (dispatch, getState) => {
     if (!trainLineId) {

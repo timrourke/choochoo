@@ -17,6 +17,17 @@ export function receiveRoutes(routes) {
   };
 }
 
+export function getRoute(routeId) {
+  return dispatch => {
+    const promise = axios.get(`api/routes/${routeId}`);
+    promise
+      .then((response) => {
+        dispatch(selectRoute(response.data.route));
+      });
+    return promise;
+  };
+}
+
 export function queryRoutes(byName = '', trainLineId = '') {
   return (dispatch, getState) => {
     if (!trainLineId) {

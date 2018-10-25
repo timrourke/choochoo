@@ -1,9 +1,15 @@
 import { connect } from 'react-redux';
 import {
   selectTrainRun,
-  queryTrainRuns, deleteTrainRun, openCreateNewTrainRunModal,
+  queryTrainRuns,
+  deleteTrainRun,
+  openCreateNewTrainRunModal,
+  startEditingTrainRun,
 } from "../actions/trainRuns";
 import TrainRunTable from '../components/TrainRunTable';
+import {queryTrainLines} from "../actions/trainLines";
+import {queryRoutes} from "../actions/routes";
+import {queryOperators} from "../actions/operators";
 
 const mapStateToProps = state => {
   return {
@@ -24,9 +30,12 @@ const mapDispatchToProps = dispatch => {
     openCreateNewTrainRunModal: () => {
       dispatch(openCreateNewTrainRunModal());
     },
-    selectTrainRun: selectedTrainRun => {
-      dispatch(selectTrainRun(selectedTrainRun));
-      dispatch(queryTrainRuns());
+    startEditingTrainRun: trainRun => {
+      dispatch(selectTrainRun(trainRun));
+      dispatch(startEditingTrainRun(trainRun));
+      dispatch(queryTrainLines());
+      dispatch(queryRoutes('', trainRun.line));
+      dispatch(queryOperators('', trainRun.line));
     },
     queryTrainRuns: (sortOrder, sortDirection, offset) => {
       dispatch(queryTrainRuns(sortOrder, sortDirection, offset));

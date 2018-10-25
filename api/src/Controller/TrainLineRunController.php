@@ -89,7 +89,7 @@ class TrainLineRunController extends AbstractController
 
         $newTrainLineRun = new TrainLineRun();
 
-        $trainLine = $this->trainLineRepo->find($data['run']['trainLine']);
+        $trainLine = $this->trainLineRepo->find($data['run']['line']);
         $route = $this->routeRepo->find($data['run']['route']);
         $operator = $this->operatorRepo->find($data['run']['operator']);
 
@@ -114,6 +114,51 @@ class TrainLineRunController extends AbstractController
         return $this->json([
             'run' => $this->serializeRun($run[0]),
         ], 201);
+    }
+
+    /**
+     * @Route("/{id}", methods={"PUT"})
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
+    public function edit(Request $request, $id)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $trainLineRun = $this->repo->find($id);
+
+        if (!$trainLineRun) {
+            return $this->json([
+                'error' => sprintf('No train line run found with the ID %s', $id),
+            ], 404);
+        }
+
+        $trainLine = $this->trainLineRepo->find($data['run']['line']);
+        $route = $this->routeRepo->find($data['run']['route']);
+        $operator = $this->operatorRepo->find($data['run']['operator']);
+
+        $trainLineRun->setTrainLine($trainLine);
+        $trainLineRun->setTrainLineRoute($route);
+        $trainLineRun->setOperator($operator);
+        $trainLineRun->setUpdatedAt(new \DateTimeImmutable());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($trainLineRun);
+        $em->flush();
+
+        $qb = $this->buildQuery();
+
+        $qb->andWhere(
+            $qb->expr()->eq('t.id', $trainLineRun->getId())
+        )->setMaxResults(1);
+
+        $run = $qb->getQuery()->getResult();
+
+        return $this->json([
+            'run' => $this->serializeRun($run[0]),
+        ], 200);
     }
 
     /**

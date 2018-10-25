@@ -48,19 +48,44 @@ class TrainOperatorController extends AbstractController
     }
 
     /**
+     * @param string $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/{id}", methods={"GET"})
+     */
+    public function get($id)
+    {
+        $operator = $this->repo->find($id);
+
+        if (!$operator) {
+            return $this->json([
+                'error' => sprintf('No operator found with the ID %s', $id),
+            ], 404);
+        }
+
+        return $this->json([
+            'operator' => $this->serializeOperator($operator),
+        ]);
+    }
+
+    /**
      * @param \App\Entity\TrainOperator[] $operators
      * @return array
      */
     private function serializeOperators(array $operators): array
     {
         return array_map(function(TrainOperator $operator) {
-            return [
-                'id'        => $operator->getId(),
-                'firstName' => $operator->getFirstName(),
-                'lastName'  => $operator->getLastName(),
-                'trainLine' => $operator->getTrainLine()->getId(),
-            ];
+            return $this->serializeOperator($operator);
         }, $operators);
+    }
+
+    private function serializeOperator(TrainOperator $operator): array
+    {
+        return [
+            'id'        => $operator->getId(),
+            'firstName' => $operator->getFirstName(),
+            'lastName'  => $operator->getLastName(),
+            'trainLine' => $operator->getTrainLine()->getId(),
+        ];
     }
 
     private function filterByName(QueryBuilder $qb, string $name = ''): void
@@ -83,7 +108,7 @@ class TrainOperatorController extends AbstractController
             return;
         }
 
-        $qb->where(
+        $qb->andWhere(
             $qb->expr()->eq('t.trainLine', ':trainLine')
         )->setParameter('trainLine', $trainLine);
     }

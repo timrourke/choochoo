@@ -22,7 +22,7 @@ const computeNewSortDirection = (newSortColumn, state) => {
 
 const getNextOffset = (currentOffset, currentLimit, total) => {
   if (currentOffset + currentLimit > (total - 1)) {
-    return total - 1;
+    return currentOffset;
   }
 
   return currentOffset + currentLimit;
@@ -48,7 +48,11 @@ class TrainRunTable extends Component {
   }
 
   componentDidMount() {
-    this.props.queryTrainRuns();
+    this.props.queryTrainRuns(
+      this.state.sortOrder,
+      this.state.sortDirection,
+      this.state.offset
+    );
   }
 
   debounceQueryTrainRuns = () => {
@@ -106,6 +110,18 @@ class TrainRunTable extends Component {
     }, this.props.debounceTimeout);
 
     this.deleteDebounce();
+  };
+
+  handleEditClick = (trainRun) => {
+    if (typeof this.editDebounce === 'function') {
+      this.editDebounce.cancel();
+    }
+
+    this.editDebounce = debounce(() => {
+      this.props.startEditingTrainRun(trainRun);
+    }, this.props.debounceTimeout);
+
+    this.editDebounce();
   };
 
   handleHeaderClick = (newSortColumn) => {
@@ -193,6 +209,7 @@ class TrainRunTable extends Component {
                     <button
                       className="btn btn-light border border-primary"
                       title="Edit"
+                      onClick={() => this.handleEditClick(run)}
                     >
                       ✏
                     </button>

@@ -17,6 +17,17 @@ export function receiveTrainLines(trainLines) {
   };
 }
 
+export function getTrainLine(trainLineId) {
+  return dispatch => {
+    const promise = axios.get(`api/trainLines/${trainLineId}`);
+    promise
+      .then((response) => {
+        dispatch(selectTrainLine(response.data.trainLine));
+      });
+    return promise;
+  };
+}
+
 export function queryTrainLines() {
   return dispatch => {
     axios.get('/api/trainLines')

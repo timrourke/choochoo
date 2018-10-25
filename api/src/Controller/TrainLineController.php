@@ -40,18 +40,43 @@ class TrainLineController extends AbstractController
     }
 
     /**
+     * @param string $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/{id}", methods={"GET"})
+     */
+    public function get($id)
+    {
+        $trainLine = $this->repo->find($id);
+
+        if (!$trainLine) {
+            return $this->json([
+                'error' => sprintf('No train line found with the ID %s', $id),
+            ], 404);
+        }
+
+        return $this->json([
+            'trainLine' => $this->serializeTrainLine($trainLine),
+        ]);
+    }
+
+    /**
      * @param \App\Entity\TrainLine[] $trainLines
      * @return array
      */
     private function serializeTrainLines(array $trainLines): array
     {
         return array_map(function(TrainLine $line) {
-            return [
-                'id'        => $line->getId(),
-                'name'      => $line->getName(),
-                'createdAt' => $line->getCreatedAt()->format(DateTime::ATOM),
-                'updatedAt' => $line->getUpdatedAt()->format(DateTime::ATOM),
-            ];
+            return $this->serializeTrainLine($line);
         }, $trainLines);
+    }
+
+    private function serializeTrainLine(TrainLine $line): array
+    {
+        return [
+            'id'        => $line->getId(),
+            'name'      => $line->getName(),
+            'createdAt' => $line->getCreatedAt()->format(DateTime::ATOM),
+            'updatedAt' => $line->getUpdatedAt()->format(DateTime::ATOM),
+        ];
     }
 }

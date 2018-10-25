@@ -1,4 +1,5 @@
 .filterable-dropdown {
+    border-radius: .25rem;
     display: inline-block;
     max-width: 300px;
     min-width: 200px;
@@ -37,6 +38,8 @@
 
 .filterable-dropdown ul {
     list-style-type: none;
-    margin: 0;
+    margin: 10px 0 0 0;
+    max-height: 200px;
+    overflow-y: auto;
     padding: 0;
 }

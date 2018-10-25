@@ -134,10 +134,6 @@ export default function store(state = initialState, action) {
       return {
         ...state,
         createModalOpen: true,
-        selectedOperator: null,
-        selectedRoute: null,
-        selectedTrainLine: null,
-        selectedTrainRun: null,
       };
     case CLOSE_CREATE_NEW_TRAIN_RUN_MODAL:
       return {

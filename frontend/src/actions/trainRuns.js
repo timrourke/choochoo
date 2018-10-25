@@ -1,4 +1,7 @@
 import axios from 'axios';
+import {getOperator, selectOperator} from "./operators";
+import {getTrainLine, selectTrainLine} from "./trainLines";
+import {getRoute, selectRoute} from "./routes";
 
 export const CREATED_NEW_TRAIN_RUN            = 'CREATED_NEW_TRAIN_RUN';
 export const SELECT_TRAIN_RUN                 = 'SELECT_TRAIN_RUN';
@@ -24,12 +27,12 @@ export function createNewTrainRun() {
 
     axios.post('/api/runs', {
       run: {
-        trainLine: state.store.selectedTrainLine.id,
+        line: state.store.selectedTrainLine.id,
         route: state.store.selectedRoute.id,
         operator: state.store.selectedOperator.id,
       },
-    }).then((response) => {
-      dispatch(createdNewTrainRun(response.data.run));
+    }).then(() => {
+      dispatch(createdNewTrainRun());
       dispatch(queryTrainRuns(
         state.store.sortOrder,
         state.store.sortDirection,
@@ -39,12 +42,11 @@ export function createNewTrainRun() {
   };
 };
 
-export function createdNewTrainRun(newTrainRun) {
+export function createdNewTrainRun() {
   return {
     type: CREATED_NEW_TRAIN_RUN,
-    newTrainRun,
   };
-};
+}
 
 export function deleteTrainRun(trainRunId) {
   return (dispatch, getState) => {
@@ -58,7 +60,64 @@ export function deleteTrainRun(trainRunId) {
       ));
     });
   };
-};
+}
+
+export function editTrainRun(trainRun) {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    axios.put(`/api/runs/${trainRun.id}`,
+      {
+        run: {
+          id: trainRun.id,
+          line: state.store.selectedTrainLine.id,
+          route: state.store.selectedRoute.id,
+          operator: state.store.selectedOperator.id,
+        },
+      })
+      .then(() => {
+        dispatch(createdNewTrainRun());
+        dispatch(queryTrainRuns(
+          state.store.sortOrder,
+          state.store.sortDirection,
+          state.store.offset
+        ));
+      })
+  };
+}
+
+export function startEditingTrainRun(trainRun) {
+  return dispatch => {
+    const promises = [
+      dispatch(getOperator(trainRun.operator)),
+      dispatch(getTrainLine(trainRun.line)),
+      dispatch(getRoute(trainRun.route)),
+    ];
+
+    Promise.all(promises).then((values) => {
+      const results = values.reduce((acc, current) => {
+        if ('operator' in current.data) {
+          acc.operator = current.data.operator;
+        }
+
+        if ('trainLine' in current.data) {
+          acc.trainLine = current.data.trainLine;
+        }
+
+        if ('route' in current.data) {
+          acc.route = current.data.route;
+        }
+
+        return acc;
+      }, {});
+
+      dispatch(selectTrainLine(results.trainLine));
+      dispatch(selectOperator(results.operator));
+      dispatch(selectRoute(results.route));
+      dispatch(openCreateNewTrainRunModal());
+    });
+  };
+}
 
 export function selectTrainRun(selectedTrainRun) {
   return {

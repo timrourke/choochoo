@@ -48,31 +48,45 @@ class TrainLineRouteController extends AbstractController
     }
 
     /**
+     * @param string $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/{id}", methods={"GET"})
+     */
+    public function get($id)
+    {
+        $route = $this->repo->find($id);
+
+        if (!$route) {
+            return $this->json([
+                'error' => sprintf('No route found with the ID %s', $id),
+            ], 404);
+        }
+
+        return $this->json([
+            'route' => $this->serializeRoute($route),
+        ]);
+    }
+
+    /**
      * @param \App\Entity\TrainLineRoute[] $routes
      * @return array
      */
     private function serializeRoutes(array $routes): array
     {
         return array_map(function(TrainLineRoute $route) {
-            return [
-                'id'        => $route->getId(),
-                'name'      => $route->getName(),
-                'createdAt' => $route->getCreatedAt()->format(DateTime::ATOM),
-                'updatedAt' => $route->getUpdatedAt()->format(DateTime::ATOM),
-                'trainLine' => $route->getTrainLine()->getId(),
-            ];
+            return $this->serializeRoute($route);
         }, $routes);
     }
 
-    private function filterByTrainLine(QueryBuilder $qb, string $trainLine = ''): void
+    private function serializeRoute(TrainLineRoute $route): array
     {
-        if (empty($trainLine)) {
-            return;
-        }
-
-        $qb->where(
-            $qb->expr()->eq('t.trainLine', ':trainLine')
-        )->setParameter('trainLine', $trainLine);
+        return [
+            'id'        => $route->getId(),
+            'name'      => $route->getName(),
+            'createdAt' => $route->getCreatedAt()->format(DateTime::ATOM),
+            'updatedAt' => $route->getUpdatedAt()->format(DateTime::ATOM),
+            'trainLine' => $route->getTrainLine()->getId(),
+        ];
     }
 
     private function filterByName(QueryBuilder $qb, string $name = ''): void
@@ -84,5 +98,16 @@ class TrainLineRouteController extends AbstractController
         $qb->where(
             $qb->expr()->like('t.name', ':name')
         )->setParameter('name', '%' . $name . '%');
+    }
+
+    private function filterByTrainLine(QueryBuilder $qb, string $trainLine = ''): void
+    {
+        if (empty($trainLine)) {
+            return;
+        }
+
+        $qb->andWhere(
+            $qb->expr()->eq('t.trainLine', ':trainLine')
+        )->setParameter('trainLine', $trainLine);
     }
 }

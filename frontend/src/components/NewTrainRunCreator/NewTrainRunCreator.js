@@ -16,8 +16,12 @@ export default class NewTrainRunCreator extends Component {
     this.props.closeCreateNewTrainRunModal();
   };
 
-  handleClickCreate = () => {
-    this.props.createNewTrainRun();
+  handleClickSave = () => {
+    if (this.props.selectedTrainRun && 'id' in this.props.selectedTrainRun) {
+      this.props.editTrainRun(this.props.selectedTrainRun);
+    } else {
+      this.props.createNewTrainRun();
+    }
   };
 
   render() {
@@ -30,6 +34,11 @@ export default class NewTrainRunCreator extends Component {
         className="new-train-run-creator-wrapper"
       >
         <form onSubmit={(e) => this.handleSubmit(e)} className="new-train-run-creator">
+          {this.props.selectedTrainRun && 'id' in this.props.selectedTrainRun ?
+            <h3>{`Editing run ${this.props.selectedTrainRun.runNumber}`}</h3>
+            :
+            <h3>Create new train run</h3>
+          }
           <div className="form-group">
             <label htmlFor="train-line">Train Line</label>
             <TrainLinesFilterableDropdownContainer id="train-line" />
@@ -47,13 +56,19 @@ export default class NewTrainRunCreator extends Component {
           </div>
           }
           {this.props.selectedTrainLine && this.props.selectedRoute && this.props.selectedOperator &&
-          <button
-            type="submit"
-            className="create btn btn-success"
-            onClick={() => this.handleClickCreate()}
-          >
-            Create
-          </button>
+            <div className="form-group">
+              <button
+                type="submit"
+                className="create btn btn-success"
+                onClick={() => this.handleClickSave()}
+              >
+                {this.props.selectedTrainRun && 'id' in this.props.selectedTrainRun ?
+                  'Edit'
+                  :
+                  'Create'
+                }
+              </button>
+            </div>
           }
           <button
             type="button"
