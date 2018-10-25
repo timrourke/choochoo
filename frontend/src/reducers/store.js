@@ -11,7 +11,8 @@ import {
   SELECT_TRAIN_LINE
 } from '../actions/trainLines';
 import {
-  CREATED_NEW_TRAIN_RUN,
+  CLOSE_CREATE_NEW_TRAIN_RUN_MODAL,
+  CREATED_NEW_TRAIN_RUN, OPEN_CREATE_NEW_TRAIN_RUN_MODAL,
   RECEIVE_TRAIN_RUNS,
   SELECT_TRAIN_RUN
 } from '../actions/trainRuns';
@@ -21,6 +22,7 @@ import {
 } from "../components/TrainRunTable/TrainRunTable";
 
 const initialState = {
+  createModalOpen: false,
   isCreating: false,
   limit: 5,
   offset: 0,
@@ -101,6 +103,7 @@ export default function store(state = initialState, action) {
     case CREATED_NEW_TRAIN_RUN:
       return {
         ...state,
+        createModalOpen: false,
         selectedOperator: null,
         selectedRoute: null,
         selectedTrainLine: null,
@@ -126,6 +129,24 @@ export default function store(state = initialState, action) {
         ),
         sortOrder: action.sortOrder,
         sortDirection: action.sortDirection,
+      };
+    case OPEN_CREATE_NEW_TRAIN_RUN_MODAL:
+      return {
+        ...state,
+        createModalOpen: true,
+        selectedOperator: null,
+        selectedRoute: null,
+        selectedTrainLine: null,
+        selectedTrainRun: null,
+      };
+    case CLOSE_CREATE_NEW_TRAIN_RUN_MODAL:
+      return {
+        ...state,
+        createModalOpen: false,
+        selectedOperator: null,
+        selectedRoute: null,
+        selectedTrainLine: null,
+        selectedTrainRun: null,
       };
     default:
       return state;

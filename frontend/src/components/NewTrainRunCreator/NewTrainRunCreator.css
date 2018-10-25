@@ -1,8 +1,24 @@
+.new-train-run-creator-wrapper {
+    background-color: rgba(0,0,0,0.5);
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+
 .new-train-run-creator {
     background-color: white;
+    box-shadow: 0 3px 10px 0 rgba(0,0,0,0.25);
     padding: 1em;
+    position: fixed;
     text-align: left;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
     width: 300px;
+    z-index: 2;
 }
 
 .new-train-run-creator label {
@@ -13,6 +29,6 @@
     width: 100%;
 }
 
-.new-train-run-creator .create {
+.new-train-run-creator button {
     width: 100%;
 }

@@ -1,5 +1,8 @@
 import { connect } from 'react-redux';
-import { createNewTrainRun } from "../actions/trainRuns";
+import {
+  closeCreateNewTrainRunModal,
+  createNewTrainRun
+} from "../actions/trainRuns";
 import NewTrainRunCreator
   from "../components/NewTrainRunCreator/NewTrainRunCreator";
 
@@ -9,6 +12,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    closeCreateNewTrainRunModal: () => {
+      dispatch(closeCreateNewTrainRunModal());
+    },
     createNewTrainRun: () => {
       dispatch(createNewTrainRun())
     },

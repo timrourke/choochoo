@@ -67,6 +67,10 @@ class TrainRunTable extends Component {
     this.debounce();
   };
 
+  handleClickCreateNewTrainRun = () => {
+    this.props.openCreateNewTrainRunModal();
+  };
+
   handleClickIncrementOffset = () => {
     this.setState({
       ...this.state,
@@ -165,7 +169,15 @@ class TrainRunTable extends Component {
               </button>
             </th>
             <th style={{width: '50px'}}> </th>
-            <th style={{width: '50px'}}> </th>
+            <th style={{width: '50px'}}>
+              <button
+                className="btn btn-light border border-success"
+                title="Create New Train Run"
+                onClick={() => this.handleClickCreateNewTrainRun()}
+              >
+                🆕
+              </button>
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -178,11 +190,17 @@ class TrainRunTable extends Component {
                   <td>{run.runNumber}</td>
                   <td>{run.operatorCompoundId}</td>
                   <td>
-                    <button className="btn btn-light border border-primary">✏</button>
+                    <button
+                      className="btn btn-light border border-primary"
+                      title="Edit"
+                    >
+                      ✏
+                    </button>
                   </td>
                   <td>
                     <button
                       className="btn btn-light border border-danger"
+                      title="Delete"
                       onClick={() => this.handleDeleteClick(run.id)}
                     >
                       🗑
@@ -204,8 +222,9 @@ class TrainRunTable extends Component {
           <ul className="pagination">
             <li className="page-item">
               <button
-                className="page-link"
                 aria-label="Previous"
+                className="page-link"
+                title="Previous"
                 onClick={() => this.handleClickDecrementOffset()}
               >
                 <span aria-hidden="true">&laquo;</span>
@@ -215,8 +234,9 @@ class TrainRunTable extends Component {
             <li className="page-item page-item-spacer"> </li>
             <li className="page-item">
               <button
-                className="page-link"
                 aria-label="Next"
+                className="page-link"
+                title="Next"
                 onClick={() => this.handleClickIncrementOffset()}
               >
                 <span aria-hidden="true">&raquo;</span>

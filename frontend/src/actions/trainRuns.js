@@ -1,8 +1,22 @@
 import axios from 'axios';
 
-export const CREATED_NEW_TRAIN_RUN = 'CREATED_NEW_TRAIN_RUN';
-export const SELECT_TRAIN_RUN      = 'SELECT_TRAIN_RUN';
-export const RECEIVE_TRAIN_RUNS    = 'RECEIVE_TRAIN_RUNS';
+export const CREATED_NEW_TRAIN_RUN            = 'CREATED_NEW_TRAIN_RUN';
+export const SELECT_TRAIN_RUN                 = 'SELECT_TRAIN_RUN';
+export const RECEIVE_TRAIN_RUNS               = 'RECEIVE_TRAIN_RUNS';
+export const OPEN_CREATE_NEW_TRAIN_RUN_MODAL  = 'OPEN_CREATE_NEW_TRAIN_RUN_MODAL';
+export const CLOSE_CREATE_NEW_TRAIN_RUN_MODAL = 'CLOSE_CREATE_NEW_TRAIN_RUN_MODAL';
+
+export function openCreateNewTrainRunModal() {
+  return {
+    type: OPEN_CREATE_NEW_TRAIN_RUN_MODAL,
+  };
+}
+
+export function closeCreateNewTrainRunModal() {
+  return {
+    type: CLOSE_CREATE_NEW_TRAIN_RUN_MODAL,
+  };
+}
 
 export function createNewTrainRun() {
   return (dispatch, getState) => {

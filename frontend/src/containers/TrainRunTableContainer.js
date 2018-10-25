@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 import {
   selectTrainRun,
-  queryTrainRuns, deleteTrainRun,
+  queryTrainRuns, deleteTrainRun, openCreateNewTrainRunModal,
 } from "../actions/trainRuns";
 import TrainRunTable from '../components/TrainRunTable';
 
 const mapStateToProps = state => {
   return {
+    createModalOpen: state.store.createModalOpen,
     limit: state.store.limit,
     offset: state.store.offset,
     total: state.store.total,
@@ -19,6 +20,9 @@ const mapDispatchToProps = dispatch => {
   return {
     deleteTrainRun: trainRunId => {
       dispatch(deleteTrainRun(trainRunId));
+    },
+    openCreateNewTrainRunModal: () => {
+      dispatch(openCreateNewTrainRunModal());
     },
     selectTrainRun: selectedTrainRun => {
       dispatch(selectTrainRun(selectedTrainRun));
