@@ -1,0 +1,23 @@
+---
+# Set up the API
+
+- name: Install composer dependencies
+  command: composer install
+  args:
+    chdir: /var/www/api
+
+- name: Create the database
+  command: bin/console doctrine:database:create --if-not-exists
+  args:
+    chdir: /var/www/api
+
+- name: Migrate the database
+  command: bin/console doctrine:migrations:migrate
+  args:
+    chdir: /var/www/api
+
+- name: Seed the database
+  command: mysql -uroot -ppassword choochoo < seed.sql
+  args:
+    chdir: /var/www/api
+  ignore_errors: True

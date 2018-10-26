@@ -14,7 +14,12 @@ services:
       - node
 
   php-fpm:
-    build: ./docker/php-fpm
+    build:
+      dockerfile: ./docker/php-fpm/Dockerfile
+      context: .
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
     volumes:
       - ./docker/php-fpm/symfony.ini:/usr/local/etc/php/conf.d/symfony.ini:ro
       - ./docker/php-fpm/symfony.ini:/usr/local/etc/php-fpm.d/symfony.ini:ro

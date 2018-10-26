@@ -7,6 +7,7 @@ RUN echo "PS1='\w\$ '" >> ~/.bashrc
 RUN apk update && apk add \
     bash \
     mysql \
+    mysql-client \
     zlib-dev \
 	$PHPIZE_DEPS
 
@@ -26,6 +27,10 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php -r "unlink('composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer
 
-ADD symfony.ini /usr/local/etc/php/conf.d/symfony.ini
-ADD symfony.ini /usr/local/etc/php-fpm.d/symfony.ini
-ADD symfony.pool.conf /usr/local/etc/php-fpm.d/symfony.pool.conf
+ADD ./docker/php-fpm/symfony.ini /usr/local/etc/php/conf.d/symfony.ini
+ADD ./docker/php-fpm/symfony.ini /usr/local/etc/php-fpm.d/symfony.ini
+ADD ./docker/php-fpm/symfony.pool.conf /usr/local/etc/php-fpm.d/symfony.pool.conf
+
+COPY ./api .
+
+RUN composer install --no-interaction

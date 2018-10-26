@@ -1,5 +1,5 @@
 ---
-- name: Install Vim, the MySQL client, and Nginx
+- name: Install Vim, PHP, MySQL, Memcached, Node, the MySQL client, and Nginx
   hosts: choochoo_local
   remote_user: root
   become: yes
@@ -12,3 +12,4 @@
     - node
     - mysql
     - nginx
+    - api

@@ -35,7 +35,6 @@
     name: yarn
     state: present
     update_cache: yes
-    cache_valid_time: 3600
 
 - name: Install yarn dependencies
   command: yarn install
@@ -52,14 +51,13 @@
   become: true
   when: pm2_installed is failed
 
-- name: Check if React development server is already running
-  shell: |
-    [[ -z $(pm2 pid react-app) ]]
-  register: react_not_running
+- name: Stop React development server is already running
+  shell: pm2 delete react-app
+  become: yes
   ignore_errors: True
 
 - name: Start React development server
   shell: pm2 start node_modules/react-scripts/scripts/start.js --name react-app
+  become: true
   args:
     chdir: /var/www/frontend
-  when: react_not_running is failed
