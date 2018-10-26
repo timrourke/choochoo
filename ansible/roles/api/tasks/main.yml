@@ -17,7 +17,6 @@
     chdir: /var/www/api
 
 - name: Seed the database
-  command: mysql -uroot -ppassword choochoo < seed.sql
+  command: bin/console doctrine:fixtures:load --no-interaction
   args:
     chdir: /var/www/api
-  ignore_errors: True

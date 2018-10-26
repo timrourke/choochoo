@@ -18,6 +18,7 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.0",
         "symfony/browser-kit": "*",
         "symfony/css-selector": "*",
         "symfony/dotenv": "*",
