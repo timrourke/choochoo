@@ -2,6 +2,7 @@ import axios from 'axios';
 import {getOperator, selectOperator} from "./operators";
 import {getTrainLine, selectTrainLine} from "./trainLines";
 import {getRoute, selectRoute} from "./routes";
+import {queryOperatorRunStats} from "./stats";
 
 export const CREATED_NEW_TRAIN_RUN            = 'CREATED_NEW_TRAIN_RUN';
 export const SELECT_TRAIN_RUN                 = 'SELECT_TRAIN_RUN';
@@ -38,6 +39,7 @@ export function createNewTrainRun() {
         state.store.sortDirection,
         state.store.offset
       ));
+      dispatch(queryOperatorRunStats(state.store.selectedTrainLine.id));
     });
   };
 };
@@ -82,6 +84,7 @@ export function editTrainRun(trainRun) {
           state.store.sortDirection,
           state.store.offset
         ));
+        dispatch(queryOperatorRunStats(state.store.selectedTrainLine.id));
       })
   };
 }

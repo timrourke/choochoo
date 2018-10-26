@@ -4,10 +4,9 @@ import ReactTestUtils from 'react-dom/test-utils';
 import TrainRunTable, {
   ASC,
   DESC,
-  TRAIN_LINE,
-  ROUTE,
+  TRAIN_LINE_NAME,
   RUN_NUMBER,
-  OPERATOR_ID,
+  OPERATOR_COMPOUND_ID,
 } from './TrainRunTable';
 import {
   ASC_INDICATOR_STRING,
@@ -74,7 +73,7 @@ it('queries train routes when sort order changes', (done) => {
   Simulate.click(operatorIdColumnHeader);
 
   setTimeout(() => {
-    expect(actualSortOrder).toBe(OPERATOR_ID);
+    expect(actualSortOrder).toBe(OPERATOR_COMPOUND_ID);
     expect(actualSortDirection).toBe(ASC);
 
     done();
@@ -135,9 +134,9 @@ it('debounces queries', (done) => {
   Simulate.click(div.querySelector('.train-run-table-column-train-line button'));
 
   setTimeout(() => {
-    expect(actualSortOrder).toBe(TRAIN_LINE);
+    expect(actualSortOrder).toBe(TRAIN_LINE_NAME);
     expect(actualSortDirection).toBe(ASC);
-    expect(numTimesCalled).toBe(1);
+    expect(numTimesCalled).toBe(2);
 
     done();
   }, 100);

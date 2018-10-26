@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\TrainLine;
 use App\Repository\TrainLineRepository;
-use DateTime;
+use App\Repository\TrainOperatorRepository;
+use App\Serializer\TrainLineSerializer;
+use App\Serializer\TrainOperatorSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * Class TrainLineController
@@ -22,9 +24,17 @@ class TrainLineController extends AbstractController
      */
     private $repo;
 
-    public function __construct(TrainLineRepository $repo)
-    {
+    /**
+     * @var \App\Repository\TrainOperatorRepository
+     */
+    private $operatorRepo;
+
+    public function __construct(
+        TrainLineRepository $repo,
+        TrainOperatorRepository $operatorRepo
+    ) {
         $this->repo = $repo;
+        $this->operatorRepo = $operatorRepo;
     }
 
     /**
@@ -35,7 +45,7 @@ class TrainLineController extends AbstractController
         $trainLines = $this->repo->findAll();
 
         return $this->json([
-            'trainLines' => $this->serializeTrainLines($trainLines),
+            'trainLines' => TrainLineSerializer::serializeMany($trainLines),
         ]);
     }
 
@@ -55,28 +65,68 @@ class TrainLineController extends AbstractController
         }
 
         return $this->json([
-            'trainLine' => $this->serializeTrainLine($trainLine),
+            'trainLine' => TrainLineSerializer::serializeOne($trainLine),
         ]);
     }
 
     /**
-     * @param \App\Entity\TrainLine[] $trainLines
-     * @return array
+     * @param $id
+     * @Route("/{id}/stats", methods={"GET"})
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    private function serializeTrainLines(array $trainLines): array
-    {
-        return array_map(function(TrainLine $line) {
-            return $this->serializeTrainLine($line);
-        }, $trainLines);
+    public function getStats($id) {
+        $trainLine = $this->repo->find($id);
+
+        if (!$trainLine) {
+            return $this->json([
+                'error' => sprintf('No train line found with the ID %s', $id),
+            ], 404);
+        }
+
+        $qb = $this->operatorRepo->createQueryBuilder('t');
+
+        $qb->select([
+                't',
+                'line',
+                'COUNT(run.id) AS operator_num_runs'
+            ])
+            ->innerJoin('t.runs', 'run')
+            ->innerJoin('t.trainLine', 'line')
+            ->groupBy('t.id')
+            ->where(
+                $qb->expr()->eq('t.trainLine', ':id')
+            )
+            ->setParameter('id', $trainLine->getId());
+
+        $results = $qb->getQuery()->getResult();
+
+        if (!count($results)) {
+            return $this->json([
+                'trainLine' => [],
+                'trainLineStats' => [],
+            ]);
+        }
+
+        /**
+         * @var \App\Entity\TrainLine $trainLine
+         */
+        $trainLine = $results[0][0]->getTrainLine();
+
+        return $this->json([
+            'trainLine' => TrainLineSerializer::serializeOne($trainLine),
+            'trainLineStats' => $this->serializeStats($results),
+        ]);
     }
 
-    private function serializeTrainLine(TrainLine $line): array
+    private function serializeStats(array $stats): array
     {
-        return [
-            'id'        => $line->getId(),
-            'name'      => $line->getName(),
-            'createdAt' => $line->getCreatedAt()->format(DateTime::ATOM),
-            'updatedAt' => $line->getUpdatedAt()->format(DateTime::ATOM),
-        ];
+        return array_map(function(array $statsResult) {
+            return [
+                'trainLineName' => $statsResult[0]->getTrainLine()->getName(),
+                'trainLineId' => $statsResult[0]->getTrainLine()->getId(),
+                'numRuns' => (int) $statsResult['operator_num_runs'],
+                'operator' => TrainOperatorSerializer::serializeOne($statsResult[0]),
+            ];
+        }, $stats);
     }
 }

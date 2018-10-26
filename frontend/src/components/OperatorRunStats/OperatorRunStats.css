@@ -1,0 +1,9 @@
+.operator-run-stats {
+    margin: 1em 0;
+    position: relative;
+    width: 100%;
+}
+
+.operator-run-stats .rv-radial-chart {
+    margin: 0 auto;
+}

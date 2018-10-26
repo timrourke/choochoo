@@ -23,7 +23,8 @@
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.8",
         "symfony/phpunit-bridge": "*",
-        "symfony/process": "*"
+        "symfony/process": "*",
+        "symfony/var-dumper": "*"
     },
     "config": {
         "preferred-install": {

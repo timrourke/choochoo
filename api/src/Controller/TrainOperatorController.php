@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\TrainOperator;
 use App\Repository\TrainOperatorRepository;
+use App\Serializer\TrainOperatorSerializer;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +43,7 @@ class TrainOperatorController extends AbstractController
         $operators = $qb->getQuery()->getResult();
 
         return $this->json([
-            'operators' => $this->serializeOperators($operators),
+            'operators' => TrainOperatorSerializer::serializeMany($operators),
         ]);
     }
 
@@ -63,30 +63,10 @@ class TrainOperatorController extends AbstractController
         }
 
         return $this->json([
-            'operator' => $this->serializeOperator($operator),
+            'operator' => TrainOperatorSerializer::serializeOne($operator),
         ]);
     }
 
-    /**
-     * @param \App\Entity\TrainOperator[] $operators
-     * @return array
-     */
-    private function serializeOperators(array $operators): array
-    {
-        return array_map(function(TrainOperator $operator) {
-            return $this->serializeOperator($operator);
-        }, $operators);
-    }
-
-    private function serializeOperator(TrainOperator $operator): array
-    {
-        return [
-            'id'        => $operator->getId(),
-            'firstName' => $operator->getFirstName(),
-            'lastName'  => $operator->getLastName(),
-            'trainLine' => $operator->getTrainLine()->getId(),
-        ];
-    }
 
     private function filterByName(QueryBuilder $qb, string $name = ''): void
     {

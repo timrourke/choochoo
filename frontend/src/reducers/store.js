@@ -20,6 +20,7 @@ import {
   ASC,
   RUN_NUMBER
 } from "../components/TrainRunTable/TrainRunTable";
+import {RECEIVE_OPERATOR_RUN_STATS} from "../actions/stats";
 
 const initialState = {
   createModalOpen: false,
@@ -36,6 +37,7 @@ const initialState = {
   sortOrder: RUN_NUMBER,
   total: 0,
   trainLines: [],
+  operatorRunStats: [],
   trainRuns: [],
 };
 
@@ -143,6 +145,26 @@ export default function store(state = initialState, action) {
         selectedRoute: null,
         selectedTrainLine: null,
         selectedTrainRun: null,
+      };
+    case RECEIVE_OPERATOR_RUN_STATS:
+      const allOperatorRunStats = [
+        ...action.stats.trainLineStats,
+        ...state.operatorRunStats,
+      ];
+
+      const seen = {};
+      const uniqueOperatorRunStats = [];
+
+      allOperatorRunStats.forEach((stat) => {
+        if ('operator' in stat && !(stat.operator.id in seen)) {
+          seen[stat.operator.id] = true;
+          uniqueOperatorRunStats.push(stat);
+        }
+      });
+
+      return {
+        ...state,
+        operatorRunStats: uniqueOperatorRunStats,
       };
     default:
       return state;

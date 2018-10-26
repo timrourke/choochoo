@@ -34,17 +34,17 @@ class TrainLine
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRoute", mappedBy="trainLineId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRoute", mappedBy="trainLine", orphanRemoval=true)
      */
     private $routes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TrainOperator", mappedBy="trainLineId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\TrainOperator", mappedBy="trainLine", orphanRemoval=true)
      */
     private $operators;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRun", mappedBy="trainLineId", orphanRemoval=false)
+     * @ORM\OneToMany(targetEntity="App\Entity\TrainLineRun", mappedBy="trainLine", orphanRemoval=false)
      */
     private $runs;
 
