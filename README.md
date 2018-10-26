@@ -4,13 +4,56 @@ A simple CRUD app using React and Symfony.
 
 ## Running locally
 
-In my experience, Docker for Mac has very  poor performance because of some issues
+In my experience, Docker for Mac has very poor performance because of some issues
 Docker has with interacting with the host OS's filesystem. I've included a
 docker-compose config in the event this approach is your preference, but note
 that the application should run more efficiently using Vagrant. Vagrant
 instructions are below.
 
-### You can run `choochoo` locally using `docker-compose`:
+### Clone choochoo
+
+Clone [choochoo](https://github.com/timrourke/choochoo) from GitHub.
+
+### Install Python
+
+If you do not have Python already installed, [go get it here](https://www.python.org/downloads/).
+
+### Install Ansible
+
+You will need to have Ansible installed locally to provision the Vagrant machine
+(or a production instance). [Read about installing Ansible here](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html).
+
+### Vagrant for local development
+
+If you don't already have it, [download Vagrant](https://www.vagrantup.com/downloads.html)
+for your preferred platform. Comes with a nice installer, easy to get started.
+
+### VirtualBox for local development
+
+If you don't already have it, [download VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+for your preferred platform. Also easy to install.
+
+### Configure your local OS's hosts file
+
+For mac users, you'll want to add a line to your `/etc/hosts` file pointing the
+IP address `192.168.50.4` to the hostname `choochoo.localdev`.
+
+### Vagrant up
+
+Change directories into the folder you cloned this repository into. From there,
+run this command:
+
+```bash
+vagrant up
+```
+
+You should see the Vagrant box download, set itself up, and then run the Ansible
+provisioning steps.
+
+If all that works, browse to [http://choochoo.localdev](http://choochoo.localdev)
+and you'll see the app.
+
+### You can run `choochoo` locally using `docker-compose`, though it is not recommended:
 
 - Clone this repository
 
@@ -43,52 +86,7 @@ cd /var/www/api
 
 bin/console doctrine:database:create
 bin/console doctrine:migrations:migrate
-mysql -hmysql -uroot -ppassword -d choochoo < seed.sql
+bin/console doctrine:fixtures:load
 ``` 
 
 - Browse to [http://localhost](http://localhost) (or possibly something like [http://192.168.99.100](192.168.99.100) if you are using Docker Machine)
-
-### You can run `choochoo` locally using `Vagrant`:
-
-- Clone this repository
-
-```bash
-git clone https://github.com/timrourke/choochoo.git
-```
-
-- Edit the MySQL host names to be `localhost` instead of `mysql`:
-    - Copy the file `api/.env.dist` to `api/.env`
-    - Change the env var for `DATABASE_URL` to `mysql://root:password@localhost:3306/choochoo`
-    
-- Install `Vagrant`: https://www.vagrantup.com/downloads.html
-
-- Install `Virtualbox`: https://www.virtualbox.org/
-
-- Spin up the local environment using `Vagrant up`:
-
-```bash
-cd /path/to/choochoo
-
-vagrant up
-```
-
-**NOTE:** Installing yarnjs is flaky for some reason. You may need to re-run the
-Vagrant provision step to get it to complete:
-
-```bash
-vagrant provision
-```
-
-- SSH into the Vagrant machine and set up the database:
-
-```bash
-cd /path/to/choochoo
-
-vagrant ssh
-
-cd /var/www/api
-
-bin/console doctrine:database:create
-bin/console doctrine:migrations:migrate
-mysql -hlocalhost -uroot -ppassword -d choochoo < seed.sql
-``` 

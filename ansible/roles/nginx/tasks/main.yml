@@ -9,6 +9,6 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
 
-- name: Add the stanley nginx configuration
+- name: Add the choochoo nginx configuration
   template: src=choochoo.j2 dest=/etc/nginx/sites-enabled/choochoo
   notify: restart nginx
